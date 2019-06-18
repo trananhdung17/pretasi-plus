@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="pretasi_product_pvc_pipe" model="product.template">
+            <field name="name">PVC Pipe</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="purchase_ok" eval="True"/>
+            <field name="purchase_line_warn">no-message</field>
+            <field name="sale_line_warn">no-message</field>
+        </record>
+
+        <record id="pretasi_product_pc_strand" model="product.template">
+            <field name="name">PC Strand</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="purchase_ok" eval="True"/>
+            <field name="purchase_line_warn">no-message</field>
+            <field name="sale_line_warn">no-message</field>
+        </record>
+    </data>
+</odoo>
