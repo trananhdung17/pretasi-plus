@@ -33,7 +33,7 @@ class MRPProduction(models.Model):
         # original_quantity = (self.product_qty - self.qty_produced) or 1.0
         result = []
         sequence = 1
-        product = self.concrete_qty_ids.mapped('product_id')[0]
+        product = self.boq_id.concrete_qty_ids.mapped('product_id')[0]
         concrete_vals = {
             'sequence': sequence,
             'name': self.name,
@@ -42,7 +42,7 @@ class MRPProduction(models.Model):
             # 'bom_line_id': bom_line.id,
             'picking_type_id': self.picking_type_id.id,
             'product_id': product.id,
-            'product_uom_qty': self.total_concrete_vol * self.product_qty,
+            'product_uom_qty': self.boq_id.total_concrete_vol * self.product_qty,
             'product_uom': product.uom_id.id,
             'location_id': source_location.id,
             'location_dest_id': product.property_stock_production.id,
@@ -58,7 +58,7 @@ class MRPProduction(models.Model):
             # 'unit_factor': ,
         }
         result.append(concrete_vals)
-        product = self.pvc_pipe_qty_ids.mapped('product_id')[0]
+        product = self.boq_id.pvc_pipe_qty_ids.mapped('product_id')[0]
         pvc_pipe_vals = {
 
             'sequence': sequence,
@@ -84,7 +84,7 @@ class MRPProduction(models.Model):
             # 'unit_factor': ,
         }
         result.append(pvc_pipe_vals)
-        product = self.pv_strand_qty_ids.mapped('product_id')[0]
+        product = self.boq_id.pc_strand_qty_ids.mapped('product_id')[0]
         pc_strand_vals = {
             'sequence': sequence,
             'name': self.name,
@@ -108,13 +108,13 @@ class MRPProduction(models.Model):
             'propagate': self.propagate,
         }
         result.append(pc_strand_vals)
-        for rebar in self.rebar_qty_ids:
+        for rebar in self.boq_id.rebar_qty_ids:
 
             rebar_vals = {
                 'sequence': sequence,
                 'product_id': rebar.product_id.id,
                 'product_uom_qty': rebar.total_length,
-                'product_uom': rebar.product_id.uom_id,
+                'product_uom': rebar.product_id.uom_id.id,
                 'name': self.name,
                 'date': self.date_planned_start,
                 'date_expected': self.date_planned_start,
@@ -143,7 +143,7 @@ class MRPProduction(models.Model):
         StockMove = self.env['stock.move']
         for vals in self._prepare_move_raws_by_boq():
             raw = StockMove.create(vals)
-            raw.action_confirm()
+            raw._action_confirm()
 
     def generate_mo_lines_by_boq(self):
         """
@@ -152,9 +152,16 @@ class MRPProduction(models.Model):
         """
         self.ensure_one()
         if self.use_boq and self.boq_id.id:
-            self._generate_finished_line_by_boq()
-            # self._generate_finished_moves()
+            # self._generate_finished_line_by_boq()
+            self._generate_finished_moves()
+            self._generate_move_raw_lines_by_boq()
         return
+
+    def _generate_moves(self):
+        if not self.bom_id.id or (self.use_boq and self.boq_id.id):
+            return True
+        else:
+            return super(MRPProduction, self)._generate_moves()
 
     @api.model
     def create(self, vals_list):

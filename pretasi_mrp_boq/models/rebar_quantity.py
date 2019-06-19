@@ -14,13 +14,13 @@ class MrpBOQLine(models.Model):
             r.diameter_code = 'T%s' % r.product_id.diameter
 
     @api.multi
-    @api.depends('product_id.inkg', 'spacing.p1', 'spacing.p2', 'spacing.p3', 'sketch.total_length', 'no_of_member')
+    @api.depends('product_id.product_tmpl_id.inkg', 'spacing.p1', 'spacing.p2', 'spacing.p3', 'sketch.total_length', 'no_of_member')
     def _compute_totals(self):
         for r in self:
             r.bar_length = r.sketch.total_length
             r.no_in_member = r.spacing.p1 * r.spacing.p2 * r.spacing.p3
             r.total_length = r.no_in_member * r.bar_length * r.no_of_member / 1000
-            r.total_weight = r.total_weight * r.product_id.inkg
+            r.total_weight = r.total_weight * r.product_id.product_tmpl_id.inkg
 
     boq_id = fields.Many2one(comodel_name='mrp.boq', string='BOQ')
     product_id = fields.Many2one(string=_('Product'), comodel_name='product.product')
