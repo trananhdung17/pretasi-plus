@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="pretasi_mrp_production_form_view_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.inherit</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='bom_id']" position="attributes">
+                    <attribute name="attrs">{'required': [('use_boq', '=', False)], 'invisible': [('use_boq', '=', True)]}</attribute>
+                    <attribute name="required">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='bom_id']" position="before">
+                    <field name="use_boq"/>
+                </xpath>
+                <xpath expr="//field[@name='bom_id']" position="after">
+                    <field name="boq_id" attrs="{'required': [('use_boq', '=', True)], 'invisible': [('use_boq', '=', False)]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

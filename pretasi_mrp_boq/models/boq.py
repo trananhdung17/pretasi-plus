@@ -36,8 +36,8 @@ class MrpBOQ(models.Model):
     name = fields.Char(string=_('Name'), required=True, readonly=True, states={'draft': [('readonly', False)]})
     state = fields.Selection(string=_('Status'), selection=[('draft', _('Draft')),
                                                             ('confirmed', _('Confirmed')),
-                                                            ('cancelled', _('Cancelled'))], default='draft',
-                             track_visibility='always')
+                                                            ('cancelled', _('Cancelled'))],
+                             default='draft', copy=False, track_visibility='always')
     quantity = fields.Float(string=_('Length (mm)'), digits=(12, 3), required=True,
                             readonly=True, states={'draft': [('readonly', False)]})
     product_id = fields.Many2one(comodel_name='product.product', string=_('Beam'), required=True,
@@ -49,7 +49,7 @@ class MrpBOQ(models.Model):
     pvc_pipe_qty_ids = fields.One2many(comodel_name='pvc_pipe.quantity',
                                        inverse_name='boq_id', string=_('PVC Quantities'),
                                        readonly=True, states={'draft': [('readonly', False)]})
-    total_pvc_pipe_length = fields.Float(string=_('Total PVC Pipe Length'), compute='_compute_total_pc_strand', store=True)
+    total_pvc_pipe_length = fields.Float(string=_('Total PVC Pipe Length'), compute='_compute_total_pvc_pipe', store=True)
     pc_strand_qty_ids = fields.One2many(comodel_name='pc_strand.quantity',
                                         inverse_name='boq_id', string=_('PC Strand Quantites'),
                                         readonly=True, states={'draft': [('readonly', False)]})
@@ -60,7 +60,7 @@ class MrpBOQ(models.Model):
                                        string=_('Concrete Quantities'),
                                        readonly=True, states={'draft': [('readonly', False)]})
     total_concrete_vol = fields.Float(string=_('Total Concrete Vol'), compute='_compute_total_concrete', store=True)
-    production_ids = fields.One2many(comodel_name='mrp.production', inverse_name='boq_id')
+    production_ids = fields.One2many(comodel_name='mrp.production', inverse_name='boq_id', copy=False)
     production_count = fields.Integer(string=_('Production Count'), compute='_compute_production_count', store=True)
     routing_id = fields.Many2one(comodel_name='mrp.routing', string=_('Routing'))
 

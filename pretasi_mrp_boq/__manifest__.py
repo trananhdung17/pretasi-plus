@@ -14,6 +14,7 @@
     'data': [
         'data/products.xml',
         'views/boq.xml',
+        'views/production.xml',
         'security/ir.model.access.csv',
     ],
     'demo': [

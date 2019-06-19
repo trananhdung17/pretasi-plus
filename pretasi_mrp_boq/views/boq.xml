@@ -129,7 +129,7 @@
                         <group>
                             <field name="total_length"/>
                         </group>
-                        
+
                         <group>
                             <field name="display_name"/>
                         </group>

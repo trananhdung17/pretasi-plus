@@ -43,7 +43,7 @@ class MrpBOQLine(models.Model):
     @api.onchange('spacing')
     def onchange_spacing(self):
         if self.spacing:
-            self.no_in_member = (self.spacing.x / self.spacing.p1 + self.spacing.y / self.spacing.p2 + self.spacing.z / self.spacing.p3) * 2
+            self.no_in_member = (self.spacing.x / self.spacing.p1 + self.spacing.y / self.spacing.p2 + self.spacing.z / self.spacing.p3 + 3) * 2
 
 
 class RebarSpacing(models.Model):

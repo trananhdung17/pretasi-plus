@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <record id="pretasi_product_pvc_pipe" model="product.template">
+        <record id="pretasi_product_product_pvc_pipe" model="product.product">
             <field name="name">PVC Pipe</field>
             <field name="type">product</field>
             <field name="categ_id" ref="product.product_category_all"/>
@@ -10,7 +10,7 @@
             <field name="sale_line_warn">no-message</field>
         </record>
 
-        <record id="pretasi_product_pc_strand" model="product.template">
+        <record id="pretasi_product_product_pc_strand" model="product.product">
             <field name="name">PC Strand</field>
             <field name="type">product</field>
             <field name="categ_id" ref="product.product_category_all"/>

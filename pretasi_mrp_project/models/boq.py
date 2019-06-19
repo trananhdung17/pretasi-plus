@@ -8,4 +8,4 @@ class MRPBOQ(models.Model):
     _inherit = 'mrp.boq'
 
     project_id = fields.Many2one(comodel_name='project.project', string=_('Project'),
-                                 readonly=True, states={'draft': [('readonly', False)]})
+                                 readonly=True, states={'draft': [('readonly', False)]}, copy=False)

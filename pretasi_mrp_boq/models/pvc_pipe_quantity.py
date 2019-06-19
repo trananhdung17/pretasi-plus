@@ -16,7 +16,7 @@ class PVCPipeQuantity(models.Model):
 
     @api.model
     def _get_default_product(self):
-        return self.env.ref('pretasi_mrp_boq.pretasi_product_pvc_pipe')
+        return self.env.ref('pretasi_mrp_boq.pretasi_product_product_pvc_pipe')
 
     product_id = fields.Many2one(comodel_name='product.product', readonly=True, required=True, default=_get_default_product)
     boq_id = fields.Many2one(comodel_name='mrp.boq', string=_('Bill of Quantity'))
