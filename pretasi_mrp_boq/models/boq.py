@@ -14,12 +14,12 @@ class MrpBOQ(models.Model):
                                                             ('confirmed', _('Confirmed')),
                                                             ('cancelled', _('Cancelled'))], default='draft',
                              track_visibility='always')
-    quantity = fields.Float(string=_('Length (m)'), digits=(12, 3), required=True,
+    quantity = fields.Float(string=_('Length (mm)'), digits=(12, 3), required=True,
                             readonly=True, states={'draft': [('readonly', False)]})
     product_id = fields.Many2one(comodel_name='product.product', string=_('Beam'), required=True,
                                  readonly=True, states={'draft': [('readonly', False)]})
-    product_uom_id = fields.Many2one(comodel_name='uom.uom', string=_('UoM'), required=True,
-                                     readonly=True, states={'draft': [('readonly', False)]})
+    # product_uom_id = fields.Many2one(comodel_name='uom.uom', string=_('UoM'), required=True,
+    #                                  readonly=True, states={'draft': [('readonly', False)]})
     cast = fields.Char(string=_('Key in Cast'), readonly=True, states={'draft': [('readonly', False)]})
 
     pvc_pipe_qty_ids = fields.One2many(comodel_name='pvc_pipe.quantity',
@@ -62,13 +62,19 @@ class MrpBOQ(models.Model):
     def action_set_to_draft(self):
         return self.write({'state': 'draft'})
 
+
+
     def _prepare_mo_vals(self):
         """
 
         :return:
         """
         vals = {
-
+            'product_id': self.product_id.id,
+            'product_qty': 1.0,
+            'product_uom_id': self.product_id.uom_id.id,
+            'use_boq': True,
+            # 'move_raw_ids': [(0, 0, line) for line in self._prepare_move_raws()]
         }
         return vals
 

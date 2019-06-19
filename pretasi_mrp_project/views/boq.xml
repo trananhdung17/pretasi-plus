@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="pretasi_mrp_boq_add_project" model="ir.ui.view">
+            <field name="name">Pretasi MRP - BOQ Add Project</field>
+            <field name="model">mrp.boq</field>
+            <field name="inherit_id" ref="pretasi_mrp_boq.pretasi_mrp_boq_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='cast']" position="after">
+                    <field name="project_id"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

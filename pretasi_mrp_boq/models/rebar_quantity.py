@@ -23,7 +23,7 @@ class MrpBOQLine(models.Model):
             r.total_weight = r.total_weight * r.product_id.inkg
 
     boq_id = fields.Many2one(comodel_name='mrp.boq', string='BOQ')
-    product_id = fields.Many2one(comodel_name='product.product')
+    product_id = fields.Many2one(string=_('Product'), comodel_name='product.product')
     diameter = fields.Float(related='product_id.diameter', store=True, readonly=True)
     diameter_code = fields.Char(string=_('Bar Diameter'), compute='_compute_diameter_code')
     bar_mark = fields.Float(string=_('Bar Mark'), digits=(12, 3))
@@ -73,7 +73,7 @@ class RebarSketch(models.Model):
             r.total_length = sum(r.line_ids.mapped('value'))
             r.display_name = '\n'.join(['{name}: {value}'.format(name=line.name, value=line.value) for line in r.line_ids])
 
-    display_name = fields.Text(string='Name', compute='_compute_info')
+    display_name = fields.Text(string=_('Name'), compute='_compute_info')
     line_ids = fields.One2many(comodel_name='rebar.quantity.sketch.line', inverse_name='sketch_id')
     total_length = fields.Float(string=_('Length (mm)'), compute='_compute_info', store=True)
 

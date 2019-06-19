@@ -2,19 +2,18 @@
 # -*- coding: utf-8 -*-
 
 {
-    'name': 'Pretasi - Bill of Quantity',
+    'name': 'Pretasi - MRP Project',
     'version': '1.0',
-    'summary': 'Bill of Quantity for Pretasi Project',
-    'sequence': 20,
+    'summary': 'MRP Project for Pretasi Project',
+    'sequence': 100,
     'description': '',
-    'category': 'product',
+    'category': 'manufacturing',
     'website': '',
     'images': [],
-    'depends': ['pretasi_product', 'mrp', 'purchase', 'sale'],
+    'depends': ['pretasi_mrp_boq', 'project'],
     'data': [
-        'data/products.xml',
         'views/boq.xml',
-        'security/ir.model.access.csv',
+        'views/project.xml',
     ],
     'demo': [
     ],

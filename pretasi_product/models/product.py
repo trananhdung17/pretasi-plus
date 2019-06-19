@@ -9,6 +9,6 @@ class ProductTemplate(models.Model):
 
     width = fields.Float(string=_('Width'))
     depth = fields.Float(string=_('Depth'))
-    csa = fields.Float(string=_('Cross Sectional Area'))
-    diameter = fields.Float(string=_('Diameter'))
+    csa = fields.Float(string=_(u'Cross Sectional Area (m\u00b2)'))
+    diameter = fields.Float(string=_('Diameter (mm)'))
     inkg = fields.Float(string=_('In Kg'))
