@@ -8,10 +8,10 @@ class ConcreteQuantity(models.Model):
     _name = 'concrete.quantity'
 
     @api.multi
-    @api.depends('product_id.csa', 'boq_id.quantity', 'density')
+    @api.depends('boq_id.product_id.csa', 'boq_id.quantity', 'density')
     def _compute_vol(self):
         for r in self:
-            r.vol = r.product_id.csa * r.boq_id.quantity * r.density / 1000
+            r.vol = r.boq_id.product_id.csa * r.boq_id.quantity * r.density / 1000
 
     boq_id = fields.Many2one(comodel_name='mrp.boq', string='BOQ')
     product_id = fields.Many2one(string=_('Product'), comodel_name='product.product', required=True)

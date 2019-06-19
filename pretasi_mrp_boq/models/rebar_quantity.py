@@ -29,7 +29,8 @@ class MrpBOQLine(models.Model):
     diameter_code = fields.Char(string=_('Bar Diameter'), compute='_compute_diameter_code')
     bar_mark = fields.Float(string=_('Bar Mark'), digits=(12, 3))
     bar_length = fields.Float(string=_('Bar Length (mm)'), digits=(12, 0), compute='_compute_totals', store=True)
-    member_length = fields.Float(string=_('Member Length (mm)'), digits=(12, 0))
+    member_length = fields.Float(string=_('Member Length (mm)'), digits=(12, 0),
+                                 related='boq_id.quantity', store=True, readonly=True)
     spacing = fields.Many2one(comodel_name='rebar.quantity.spacing', string=_('Spacing (mm)'))
     no_in_member = fields.Float(string=_('No in Members'), digits=(12, 3),
                                 # compute='_compute_totals', store=True
