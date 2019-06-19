@@ -46,18 +46,18 @@ class MrpBOQ(models.Model):
     #                                  readonly=True, states={'draft': [('readonly', False)]})
     cast = fields.Char(string=_('Key in Cast'), readonly=True, states={'draft': [('readonly', False)]})
 
-    pvc_pipe_qty_ids = fields.One2many(comodel_name='pvc_pipe.quantity',
-                                       inverse_name='boq_id', string=_('PVC Quantities'),
+    pvc_pipe_qty_ids = fields.One2many(comodel_name='pvc_pipe.quantity', inverse_name='boq_id',
+                                       string=_('PVC Quantities'), copy=True,
                                        readonly=True, states={'draft': [('readonly', False)]})
     total_pvc_pipe_length = fields.Float(string=_('Total PVC Pipe Length'), compute='_compute_total_pvc_pipe', store=True)
     pc_strand_qty_ids = fields.One2many(comodel_name='pc_strand.quantity',
-                                        inverse_name='boq_id', string=_('PC Strand Quantites'),
+                                        inverse_name='boq_id', string=_('PC Strand Quantites'), copy=True,
                                         readonly=True, states={'draft': [('readonly', False)]})
     total_pc_strand_length = fields.Float(string=_('Total PC Strand Length'), compute='_compute_total_pc_strand', store=True)
     rebar_qty_ids = fields.One2many(comodel_name='rebar.quantity', inverse_name='boq_id', string=_('Rebar Quantities'),
-                                    readonly=True, states={'draft': [('readonly', False)]})
+                                    readonly=True, copy=True, states={'draft': [('readonly', False)]})
     concrete_qty_ids = fields.One2many(comodel_name='concrete.quantity', inverse_name='boq_id',
-                                       string=_('Concrete Quantities'),
+                                       string=_('Concrete Quantities'), copy=True,
                                        readonly=True, states={'draft': [('readonly', False)]})
     total_concrete_vol = fields.Float(string=_('Total Concrete Vol'), compute='_compute_total_concrete', store=True)
     production_ids = fields.One2many(comodel_name='mrp.production', inverse_name='boq_id', copy=False)
