@@ -114,6 +114,42 @@
             </field>
         </record>
 
+        <record id="pretasi_mrp_boq_sketch_form_view" model="ir.ui.view">
+            <field name="name">rebar.quantity.sketch</field>
+            <field name="model">rebar.quantity.sketch</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="line_ids">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="value"/>
+                        </tree>
+                    </field>
+                    <group>
+                        <group>
+                            <field name="total_length"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="pretasi_mrp_rebar_qty_spacing_form_view" model="ir.ui.view">
+            <field name="name">rebar.quantity.spacing</field>
+            <field name="model">rebar.quantity.spacing</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="p1"/>
+                            <field name="p2"/>
+                            <field name="p3"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
         <record id="pretasi_mrp_boq_view_action" model="ir.actions.act_window">
             <field name="name">Bill of Quantity</field>
             <field name="res_model">mrp.boq</field>
