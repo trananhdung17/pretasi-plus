@@ -145,6 +145,11 @@
                             <field name="p2"/>
                             <field name="p3"/>
                         </group>
+                        <group>
+                            <field name="x"/>
+                            <field name="y"/>
+                            <field name="z"/>
+                        </group>
                     </group>
                 </form>
             </field>

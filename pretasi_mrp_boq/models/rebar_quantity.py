@@ -14,11 +14,12 @@ class MrpBOQLine(models.Model):
             r.diameter_code = 'T%s' % r.product_id.diameter
 
     @api.multi
-    @api.depends('product_id.product_tmpl_id.inkg', 'spacing.p1', 'spacing.p2', 'spacing.p3', 'sketch.total_length', 'no_of_member')
+    @api.depends('product_id.product_tmpl_id.inkg', 'spacing.p1', 'spacing.p2', 'spacing.p3',
+                 'spacing.x', 'spacing.y', 'spacing.z', 'sketch.total_length', 'no_of_member')
     def _compute_totals(self):
         for r in self:
             r.bar_length = r.sketch.total_length
-            r.no_in_member = r.spacing.p1 * r.spacing.p2 * r.spacing.p3
+            # r.no_in_member = (r.spacing.x / r.spacing.p1 + r.spacing.y / r.spacing.p2 + r.spacing.z / r.spacing.p3) * 2
             r.total_length = r.no_in_member * r.bar_length * r.no_of_member / 1000
             r.total_weight = r.total_weight * r.product_id.product_tmpl_id.inkg
 
@@ -30,11 +31,18 @@ class MrpBOQLine(models.Model):
     bar_length = fields.Float(string=_('Bar Length (mm)'), digits=(12, 0), compute='_compute_totals', store=True)
     member_length = fields.Float(string=_('Member Length (mm)'), digits=(12, 0))
     spacing = fields.Many2one(comodel_name='rebar.quantity.spacing', string=_('Spacing (mm)'))
-    no_in_member = fields.Float(string=_('No in Members'), compute='_compute_totals', digits=(12, 3), store=True)
+    no_in_member = fields.Float(string=_('No in Members'), digits=(12, 3),
+                                # compute='_compute_totals', store=True
+                                )
     no_of_member = fields.Float(string=_('No of Members'), digits=(12, 3))
     total_length = fields.Float(string=_('Total Length (m)'), compute='_compute_totals', digits=(12, 3), store=True)
     total_weight = fields.Float(string=_('Total Weight (Kg)'), compute='_compute_totals', digits=(12, 3), store=True)
     sketch = fields.Many2one(comodel_name='rebar.quantity.sketch', string=_('Sketch'))
+
+    @api.onchange('spacing')
+    def onchange_spacing(self):
+        if self.spacing:
+            self.no_in_member = (self.spacing.x / self.spacing.p1 + self.spacing.y / self.spacing.p2 + self.spacing.z / self.spacing.p3) * 2
 
 
 class RebarSpacing(models.Model):
@@ -50,9 +58,9 @@ class RebarSpacing(models.Model):
     p1 = fields.Float(string=_('Space 1'), digits=(12, 0))
     p2 = fields.Float(string=_('Space 2'), digits=(12, 0))
     p3 = fields.Float(string=_('Space 3'), digits=(12, 0))
-    # x = fields.Float(string=_('X'), digits=(12, 0))
-    # y = fields.Float(string=_('Y'), digits=(12, 0))
-    # z = fields.Float(string=_('Z'), digits=(12, 0))
+    x = fields.Float(string=_('X'), digits=(12, 0))
+    y = fields.Float(string=_('Y'), digits=(12, 0))
+    z = fields.Float(string=_('Z'), digits=(12, 0))
 
     @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=100):
