@@ -77,6 +77,13 @@ class RebarSketch(models.Model):
     line_ids = fields.One2many(comodel_name='rebar.quantity.sketch.line', inverse_name='sketch_id')
     total_length = fields.Float(string=_('Length (mm)'), compute='_compute_info', store=True)
 
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        return []
+
+    @api.model
+    def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
+        return []
 
 class RebarSketchLine(models.Model):
     _name = 'rebar.quantity.sketch.line'
