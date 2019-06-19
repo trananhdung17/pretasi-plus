@@ -158,7 +158,12 @@
                         </group>
                     </group>
                     <group>
-                        <field name="display_name"/>
+                        <group>
+                            <field name="display_name"/>
+                        </group>
+                        <group>
+                            <field name="length"/>
+                        </group>
                     </group>
                 </form>
             </field>

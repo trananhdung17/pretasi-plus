@@ -21,7 +21,7 @@ class MrpBOQLine(models.Model):
             r.bar_length = r.sketch.total_length
             # r.no_in_member = (r.spacing.x / r.spacing.p1 + r.spacing.y / r.spacing.p2 + r.spacing.z / r.spacing.p3) * 2
             r.total_length = r.no_in_member * r.bar_length * r.no_of_member / 1000
-            r.total_weight = r.total_weight * r.product_id.product_tmpl_id.inkg
+            r.total_weight = r.total_length * r.product_id.product_tmpl_id.inkg
 
     boq_id = fields.Many2one(comodel_name='mrp.boq', string='BOQ')
     product_id = fields.Many2one(string=_('Product'), comodel_name='product.product')
@@ -59,10 +59,13 @@ class RebarSpacing(models.Model):
     @api.depends('p1', 'p2', 'p3', 'x', 'y', 'z', 'c')
     def _compute_length(self):
         for r in self:
-            r.length = (r.x / r.p1 + r.y / r.p2 + r.z / r.p3 + r.c) * 4
+            if r.p1 and r.p2 and r.p3:
+                r.length = (r.x / r.p1 + r.y / r.p2 + r.z / r.p3 + r.c) * 4
+            else:
+                r.length = 0.0
 
     display_name = fields.Text(string=_('Name'), compute='_compute_display_name', store=True)
-    length = fields.Float(string=_('Length'))
+    length = fields.Float(string=_('Number in Member'), compute='_compute_length', store=True)
     p1 = fields.Float(string=_('Space 1'), digits=(12, 0))
     p2 = fields.Float(string=_('Space 2'), digits=(12, 0))
     p3 = fields.Float(string=_('Space 3'), digits=(12, 0))

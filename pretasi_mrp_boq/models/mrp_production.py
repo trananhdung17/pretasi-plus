@@ -33,6 +33,7 @@ class MRPProduction(models.Model):
         # original_quantity = (self.product_qty - self.qty_produced) or 1.0
         result = []
         sequence = 1
+        mo_route_id = self.env.ref('stock.route_warehouse0_mto')
         product = self.boq_id.concrete_qty_ids.mapped('product_id')[0]
         concrete_vals = {
             'sequence': sequence,
@@ -50,11 +51,11 @@ class MRPProduction(models.Model):
             'company_id': self.company_id.id,
             # 'operation_id': bom_line.operation_id.id or alt_op,
             'price_unit': product.standard_price,
-            'procure_method': 'make_to_stock',
+            'procure_method': 'make_to_order' if mo_route_id.id in product.route_ids.ids else 'make_to_stock',
             'origin': self.name,
             'warehouse_id': source_location.get_warehouse().id,
             'group_id': self.procurement_group_id.id,
-            'propagate': self.propagate,
+            'propagate': self.propagate
             # 'unit_factor': ,
         }
         result.append(concrete_vals)
@@ -76,7 +77,7 @@ class MRPProduction(models.Model):
             'company_id': self.company_id.id,
             # 'operation_id': bom_line.operation_id.id or alt_op,
             'price_unit': product.standard_price,
-            'procure_method': 'make_to_stock',
+            'procure_method': 'make_to_order' if mo_route_id.id in product.route_ids.ids else 'make_to_stock',
             'origin': self.name,
             'warehouse_id': source_location.get_warehouse().id,
             'group_id': self.procurement_group_id.id,
@@ -101,7 +102,7 @@ class MRPProduction(models.Model):
             'company_id': self.company_id.id,
             # 'operation_id': bom_line.operation_id.id or alt_op,
             'price_unit': product.standard_price,
-            'procure_method': 'make_to_stock',
+            'procure_method': 'make_to_order' if mo_route_id.id in product.route_ids.ids else 'make_to_stock',
             'origin': self.name,
             'warehouse_id': source_location.get_warehouse().id,
             'group_id': self.procurement_group_id.id,
@@ -126,7 +127,7 @@ class MRPProduction(models.Model):
                 'company_id': self.company_id.id,
                 # 'operation_id': bom_line.operation_id.id or alt_op,
                 'price_unit': rebar.product_id.standard_price,
-                'procure_method': 'make_to_stock',
+                'procure_method': 'make_to_order' if mo_route_id.id in rebar.product_id.route_ids.ids else 'make_to_stock',
                 'origin': self.name,
                 'warehouse_id': source_location.get_warehouse().id,
                 'group_id': self.procurement_group_id.id,
