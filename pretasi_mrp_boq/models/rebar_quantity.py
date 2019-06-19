@@ -43,7 +43,7 @@ class MrpBOQLine(models.Model):
     @api.onchange('spacing')
     def onchange_spacing(self):
         if self.spacing:
-            self.no_in_member = (self.spacing.x / self.spacing.p1 + self.spacing.y / self.spacing.p2 + self.spacing.z / self.spacing.p3 + 3) * 2
+            self.no_in_member = self.spacing.length
 
 
 class RebarSpacing(models.Model):
@@ -55,13 +55,21 @@ class RebarSpacing(models.Model):
         for r in self:
             r.display_name = '\n'.join([str(c) for c in [r.p1, r.p2, r.p3] if c])
 
+    @api.multi
+    @api.depends('p1', 'p2', 'p3', 'x', 'y', 'z', 'c')
+    def _compute_length(self):
+        for r in self:
+            r.length = (r.x / r.p1 + r.y / r.p2 + r.z / r.p3 + r.c) * 4
+
     display_name = fields.Text(string=_('Name'), compute='_compute_display_name', store=True)
+    length = fields.Float(string=_('Length'))
     p1 = fields.Float(string=_('Space 1'), digits=(12, 0))
     p2 = fields.Float(string=_('Space 2'), digits=(12, 0))
     p3 = fields.Float(string=_('Space 3'), digits=(12, 0))
     x = fields.Float(string=_('X'), digits=(12, 0))
     y = fields.Float(string=_('Y'), digits=(12, 0))
     z = fields.Float(string=_('Z'), digits=(12, 0))
+    c = fields.Integer(string=_('const'))
 
     @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=100):
