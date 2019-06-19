@@ -91,8 +91,6 @@ class MrpBOQ(models.Model):
     def action_set_to_draft(self):
         return self.write({'state': 'draft'})
 
-
-
     def _prepare_mo_vals(self):
         """
 
