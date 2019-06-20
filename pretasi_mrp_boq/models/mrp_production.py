@@ -116,7 +116,8 @@ class MRPProduction(models.Model):
         }
         result.append(pc_strand_vals)
         for rebar in self.boq_id.rebar_qty_ids:
-            quantity = rebar.total_length
+            # quantity = rebar.total_length
+            quantity = rebar.total_weight
             rebar_vals = {
                 'sequence': sequence,
                 'product_id': rebar.product_id.id,
