@@ -19,7 +19,7 @@ class PVCPipeQuantity(models.Model):
         return self.env.ref('pretasi_mrp_boq.pretasi_product_product_pvc_pipe')
 
     product_id = fields.Many2one(comodel_name='product.product', readonly=True, required=True, default=_get_default_product)
-    bom_id = fields.Many2one(comodel_name='mrp.bom', string=_('Bill of Quantity'))
+    bom_line_id = fields.Many2one(comodel_name='mrp.bom.line', string=_('Bill of Quantity'))
     length = fields.Float(string=_('Length (mm)'), digits=(12, 0))
     no_in_member = fields.Float(string=_('No in Members'), digits=(12, 2))
     no_of_member = fields.Float(string=_('No of Members'), digits=(12, 2))

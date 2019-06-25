@@ -13,67 +13,86 @@
         </record>
 
         <record id="pretasi_mrp_boq_form_view" model="ir.ui.view">
-            <field name="name">Pretasi - MRP BOQ Form View</field>
-            <field name="model">mrp.boq</field>
-            <field name="inheri_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="name">Pretasi - MRP BOM Form View</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='button_box']" position="inside">
-                    <button name="action_create_or_open_mo" type="object" icon="fa-gears"
-                                    class="oe_stat_button" states="confirmed">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="production_count" widget="statinfo" nolabel="1"/>
-                                    </span>
-                                    <span class="o_stat_text">Manufactured</span>
-                                </div>
-                            </button>
+                    <button name="action_open_mo" type="object" icon="fa-gears"
+                            class="oe_stat_button">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="production_count" widget="statinfo" nolabel="1"/>
+                            </span>
+                            <span class="o_stat_text">Manufactured</span>
+                        </div>
+                    </button>
                 </xpath>
                 <xpath expr="//label[@for='product_qty']" position="before">
+                    <field name="state" invisible="1"/>
                     <field name="length"/>
                 </xpath>
-                <xpath expr="//field[@name='type']" position="before">
-                    <field name="boq"/>
+                <xpath expr="//page[1]//tree[1]" position="attributes">
+                    <attribute name="editable"></attribute>
                 </xpath>
-                <xpath expr="//page[2]" position="after">
-                    <page attrs="{'invisible': [('boq', '=', False)]}" name="concrete" string="Concrete">
-                        <field name="concrete_qty_ids">
-                            <tree editable="bottom">
-                                <field name="product_id"/>
-                                <field name="density"/>
-                                <field name="vol" sum="Total Vol"/>
-                            </tree>
-                        </field>
-                    </page>
-                    <page attrs="{'invisible': [('boq', '=', False)]}" name="rebar" string="Rebars">
-                        <field name="rebar_qty_ids">
-                            <tree editable="bottom">
-                                <field name="product_id"/>
-                                <field name="diameter_code"/>
-                                <field name="bar_mark"/>
-                                <field name="bar_length"/>
-                                <field name="member_length"/>
-                                <field name="spacing"/>
-                                <field name="no_in_member"/>
-                                <field name="no_of_member"/>
-                                <field name="total_length" sum="Total Length"/>
-                                <field name="total_weight" sum="Total Weight"/>
-                                <field name="sketch"/>
-                            </tree>
-                        </field>
-                    </page>
-                    <page attrs="{'invisible': [('boq', '=', False)]}" name="pvc_pipe" string="PVC Pipe">
-                        <field name="pvc_pipe_qty_ids">
-                            <tree editable="bottom">
-                                <field name="product_id" invisible="1"/>
-                                <field name="length"/>
-                                <field name="no_in_member"/>
-                                <field name="no_of_member"/>
-                                <field name="total_length" sum="Total Length"/>
-                            </tree>
-                        </field>
-                    </page>
-                    <page attrs="{'invisible': [('boq', '=', False)]}" name="pc_strand" string="PC Strand">
-                                <field name="pc_strand_qty_ids">
+                <xpath expr="//field[@name='bom_line_ids']" position="after">
+                    <group>
+                        <group>
+                            <field name="rebar_total_length" attrs="{'invisible': [('rebar_count', '=', 0)]}"/>
+                        </group>
+                        <group>
+                            <field name="rebar_total_weight" attrs="{'invisible': [('rebar_count', '=', 0)]}"/>
+                        </group>
+                    </group>
+                    <field name="rebar_count" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="pretasi_mrp_bom_line_form_view" model="ir.ui.view">
+            <field name="name">Pretasi - MRP BOQ Form View</field>
+            <field name="model">mrp.bom.line</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_line_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[1]/group[1]" position="before">
+                    <group string="Name">
+                        <field name="name" nolabel="1"/>
+                    </group>
+                    <group string="Component Type">
+                        <field name="type" nolabel="1"/>
+                    </group>
+                </xpath>
+                <xpath expr="//field[@name='product_qty']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('type', 'not in', ('concrete', 'pvc_pipe', 'pc_strand', 'rebar'))]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='product_qty']" position="after">
+                    <field name="input_product_qty" attrs="{'invisible': [('type', 'in', ('concrete', 'pvc_pipe', 'pc_strand', 'rebar'))]}"/>
+                </xpath>
+                <xpath expr="//group[1]" position="after">
+                    <notebook>
+                        <page name="components" string="Components">
+                            <group string="Concrete" attrs="{'invisible': [('type', '!=', 'concrete')]}">
+
+                                <group>
+                                    <field name="concrete_density" attrs="{'required': [('type', '=', 'concrete')]}"/>
+                                </group>
+                                <group>
+                                    <field name="concrete_vol"/>
+                                </group>
+                            </group>
+                            <group string="PVC Pipes" attrs="{'invisible': [('type', '!=', 'pvc_pipe')]}">
+                                <field name="pvc_pipe_qty_ids"  nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="product_id" invisible="1"/>
+                                        <field name="length"/>
+                                        <field name="no_in_member"/>
+                                        <field name="no_of_member"/>
+                                        <field name="total_length" sum="Total Length"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="PC Strands" attrs="{'invisible': [('type', '!=', 'pc_strand')]}">
+                                <field name="pc_strand_qty_ids" nolabel="1">
                                     <tree editable="bottom">
                                         <field name="product_id" invisible="1"/>
                                         <field name="length"/>
@@ -84,44 +103,31 @@
                                         <field name="total_weight" sum="Total Weight"/>
                                     </tree>
                                 </field>
-                            </page>
-                </xpath>
-                <xpath expr="//page[1]" position="attributes">
-                    <attribute name="attrs">{'invisible': [('boq', '=', True)]}</attribute>
-                </xpath>
-                <!--<form>-->
-                    <!--<header>-->
-                        <!--<button name="action_confirm" type="object" class="btn-primary" string="Confirm" states="draft"/>-->
+                            </group>
 
-                        <!--<button name="action_cancel" type="object" class="btn" string="Cancel" states="confirmed"/>-->
-                        <!--<button name="action_set_to_draft" type="object" class="btn" string="Set to Draft" states="cancelled"/>-->
-                        <!--<field name="state" widget="statusbar" readonly="1"/>-->
-                    <!--</header>-->
-                    <!--<sheet>-->
-                        <!--<div class="oe_button_box" name="button_box">-->
+                            <group attrs="{'invisible': [('type', '!=', 'rebar')]}" string="Rebar">
+                                <group>
+                                    <field name="bar_mark"/>
+                                    <field name="spacing"/>
+                                    <field name="no_of_member"/>
+                                    <field name="sketch"/>
+                                </group>
+                                <group>
+                                    <field name="diameter_code"/>
+                                    <field name="member_length"/>
+                                    <field name="bar_length"/>
+                                    <field name="no_in_member"/>
+                                </group>
+                                <group string="Totals">
+                                    <field name="total_length" sum="Total Length"/>
+                                    <field name="total_weight" sum="Total Weight"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
 
-                        <!--</div>-->
-                        <!--<div class="oe_title">-->
-                            <!--<h1><field name="name" placeholder="Bill of Quantity reference" nolabel="1"/></h1>-->
-                        <!--</div>-->
-                        <!--<group name="main">-->
-                            <!--<group>-->
-                                <!--<field name="product_id"/>-->
-                                <!--<field name="quantity"/>-->
-                                <!--&lt;!&ndash;<field name="product_uom_id"/>&ndash;&gt;-->
-                            <!--</group>-->
-                            <!--<group>-->
-                                <!--<field name="cast"/>-->
-                            <!--</group>-->
-                        <!--</group>-->
-                        <!--<notebook>-->
-                        <!--</notebook>-->
-                    <!--</sheet>-->
-                    <!--<div class="oe_chatter">-->
-                        <!--<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>-->
-                        <!--<field name="message_ids" widget="mail_thread"/>-->
-                    <!--</div>-->
-                <!--</form>-->
+                </xpath>
+
             </field>
         </record>
 

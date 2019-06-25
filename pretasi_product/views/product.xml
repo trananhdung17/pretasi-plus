@@ -10,6 +10,10 @@
                     <page name="construction" string="Construction">
                         <group name="properties">
                             <group>
+                                <field name="pretasi_type"/>
+                            </group>
+                            <group/>
+                            <group>
                                 <field name="width"/>
                                 <field name="depth"/>
                                 <field name="csa"/>

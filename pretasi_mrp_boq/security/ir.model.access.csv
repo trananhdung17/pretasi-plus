@@ -1,8 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 
-access_mrp_boq,mrp.boq,model_mrp_boq,mrp.group_mrp_user,1,0,0,0
-access_mrp_boq_manager,mrp.boq.manager,model_mrp_boq,mrp.group_mrp_manager,1,1,1,1
-
 access_mrp_boq_concrete,mrp.boq.concrete,model_concrete_quantity,mrp.group_mrp_user,1,0,0,0
 access_mrp_boq_concreate_manager,mrp.boq.concrete.manager,model_concrete_quantity,mrp.group_mrp_manager,1,1,1,1
 
