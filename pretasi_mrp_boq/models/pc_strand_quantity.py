@@ -20,7 +20,7 @@ class PCStrandQuantity(models.Model):
         return self.env.ref('pretasi_mrp_boq.pretasi_product_product_pc_strand')
 
     product_id = fields.Many2one(comodel_name='product.product', readonly=True, required=True, default=_get_default_product)
-    boq_id = fields.Many2one(comodel_name='mrp.boq', string=_('Bill of Quantity'))
+    bom_id = fields.Many2one(comodel_name='mrp.bom', string=_('Bill of Quantity'))
     length = fields.Float(string=_('Length (m)'), digits=(12, 3))
     no_in_member = fields.Float(string=_('No in Members'), digits=(12, 2))
     bed_line = fields.Float(string=_('Bed Line'), digits=(12, 2))

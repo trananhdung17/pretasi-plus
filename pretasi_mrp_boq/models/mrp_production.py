@@ -9,13 +9,7 @@ from odoo.exceptions import UserError
 class MRPProduction(models.Model):
     _inherit = 'mrp.production'
 
-    boq_id = fields.Many2one(comodel_name='mrp.boq', string='BOQ')
-    use_boq = fields.Boolean(string=_('Use BOQ'), default=False)
-
-    @api.onchange('boq_id')
-    def onchange_boq(self):
-        if self.boq_id:
-            self.product_id = self.boq_id.product_id
+    use_boq = fields.Boolean(string=_('Use BOQ'), related='bom_id.boq')
 
     def _prepare_move_raws_by_boq(self):
         """
@@ -25,7 +19,7 @@ class MRPProduction(models.Model):
         if self.routing_id:
             routing = self.routing_id
         else:
-            routing = self.boq_id.routing_id
+            routing = self.bom_id.routing_id
 
         if routing and routing.location_id:
             source_location = routing.location_id
@@ -36,8 +30,8 @@ class MRPProduction(models.Model):
         result = []
         sequence = 1
         mo_route_id = self.env.ref('stock.route_warehouse0_mto')
-        product = self.boq_id.concrete_qty_ids.mapped('product_id')[0]
-        quantity = self.boq_id.total_concrete_vol * self.product_qty
+        product = self.bom_id.concrete_qty_ids.mapped('product_id')[0]
+        quantity = self.bom_id.total_concrete_vol * self.product_qty
         concrete_vals = {
             'sequence': sequence,
             'name': self.name,
@@ -62,8 +56,8 @@ class MRPProduction(models.Model):
             'unit_factor': quantity / original_quantity,
         }
         result.append(concrete_vals)
-        product = self.boq_id.pvc_pipe_qty_ids.mapped('product_id')[0]
-        quantity = self.boq_id.total_pvc_pipe_length * self.product_qty
+        product = self.bom_id.pvc_pipe_qty_ids.mapped('product_id')[0]
+        quantity = self.bom_id.total_pvc_pipe_length * self.product_qty
         pvc_pipe_vals = {
 
             'sequence': sequence,
@@ -89,8 +83,8 @@ class MRPProduction(models.Model):
             'unit_factor': quantity / original_quantity,
         }
         result.append(pvc_pipe_vals)
-        product = self.boq_id.pc_strand_qty_ids.mapped('product_id')[0]
-        quantity = self.boq_id.total_pvc_pipe_length * self.product_qty
+        product = self.bom_id.pc_strand_qty_ids.mapped('product_id')[0]
+        quantity = self.bom_id.total_pvc_pipe_length * self.product_qty
         pc_strand_vals = {
             'sequence': sequence,
             'name': self.name,
@@ -115,7 +109,7 @@ class MRPProduction(models.Model):
             'unit_factor': quantity / original_quantity,
         }
         result.append(pc_strand_vals)
-        for rebar in self.boq_id.rebar_qty_ids:
+        for rebar in self.bom_id.rebar_qty_ids:
             # quantity = rebar.total_length
             quantity = rebar.total_weight
             rebar_vals = {
@@ -160,14 +154,14 @@ class MRPProduction(models.Model):
         :return:
         """
         self.ensure_one()
-        if self.use_boq and self.boq_id.id:
+        if self.use_boq:
             # self._generate_finished_line_by_boq()
             self._generate_finished_moves()
             self._generate_move_raw_lines_by_boq()
         return
 
     def _generate_moves(self):
-        if not self.bom_id.id or (self.use_boq and self.boq_id.id):
+        if self.use_boq:
             return True
         else:
             return super(MRPProduction, self)._generate_moves()

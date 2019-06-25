@@ -5,9 +5,7 @@ from odoo import models, api, fields, _
 
 
 class MrpBOQ(models.Model):
-    _inherit = ['mail.thread']
-    _name = 'mrp.boq'
-    _description = 'Bill of Quantity for Beam'
+    _inherit = 'mrp.bom'
 
     @api.multi
     @api.depends('pvc_pipe_qty_ids.total_length')
@@ -33,19 +31,19 @@ class MrpBOQ(models.Model):
         for r in self:
             r.production_count = len(r.production_ids.ids)
 
-    name = fields.Char(string=_('Name'), required=True, readonly=True, states={'draft': [('readonly', False)]})
+    # name = fields.Char(string=_('Name'), required=True, readonly=True, states={'draft': [('readonly', False)]})
     state = fields.Selection(string=_('Status'), selection=[('draft', _('Draft')),
                                                             ('confirmed', _('Confirmed')),
                                                             ('cancelled', _('Cancelled'))],
                              default='draft', copy=False, track_visibility='always')
-    quantity = fields.Float(string=_('Length (mm)'), digits=(12, 3), required=True,
-                            readonly=True, states={'draft': [('readonly', False)]})
-    product_id = fields.Many2one(comodel_name='product.product', string=_('Beam'), required=True,
-                                 readonly=True, states={'draft': [('readonly', False)]})
+    length = fields.Float(string=_('Length (mm)'), digits=(12, 3), required=True,
+                          readonly=True, states={'draft': [('readonly', False)]})
+    # product_id = fields.Many2one(comodel_name='product.product', string=_('Beam'), required=True,
+    #                              readonly=True, states={'draft': [('readonly', False)]})
     # product_uom_id = fields.Many2one(comodel_name='uom.uom', string=_('UoM'), required=True,
     #                                  readonly=True, states={'draft': [('readonly', False)]})
     cast = fields.Char(string=_('Key in Cast'), readonly=True, states={'draft': [('readonly', False)]})
-
+    boq = fields.Boolean(string=_('is BOQ'), default=False)
     pvc_pipe_qty_ids = fields.One2many(comodel_name='pvc_pipe.quantity', inverse_name='boq_id',
                                        string=_('PVC Quantities'), copy=True,
                                        readonly=True, states={'draft': [('readonly', False)]})
@@ -62,7 +60,7 @@ class MrpBOQ(models.Model):
     total_concrete_vol = fields.Float(string=_('Total Concrete Vol'), compute='_compute_total_concrete', store=True)
     production_ids = fields.One2many(comodel_name='mrp.production', inverse_name='boq_id', copy=False)
     production_count = fields.Integer(string=_('Production Count'), compute='_compute_production_count', store=True)
-    routing_id = fields.Many2one(comodel_name='mrp.routing', string=_('Routing'))
+    # routing_id = fields.Many2one(comodel_name='mrp.routing', string=_('Routing'))
 
     def _open_manufacturing_orders(self):
         """

@@ -11,7 +11,7 @@ class MrpBOQLine(models.Model):
     @api.depends('product_id.diameter')
     def _compute_diameter_code(self):
         for r in self:
-            r.diameter_code = 'T%s' % r.product_id.diameter
+            r.diameter_code = 'T%s' % int(r.product_id.diameter)
 
     @api.multi
     @api.depends('product_id.product_tmpl_id.inkg', 'spacing.p1', 'spacing.p2', 'spacing.p3',
@@ -23,14 +23,14 @@ class MrpBOQLine(models.Model):
             r.total_length = r.no_in_member * r.bar_length * r.no_of_member / 1000
             r.total_weight = r.total_length * r.product_id.product_tmpl_id.inkg
 
-    boq_id = fields.Many2one(comodel_name='mrp.boq', string='BOQ')
+    bom_id = fields.Many2one(comodel_name='mrp.bom', string='BOQ')
     product_id = fields.Many2one(string=_('Product'), comodel_name='product.product')
     diameter = fields.Float(related='product_id.diameter', store=True, readonly=True)
     diameter_code = fields.Char(string=_('Bar Diameter'), compute='_compute_diameter_code')
     bar_mark = fields.Float(string=_('Bar Mark'), digits=(12, 3))
     bar_length = fields.Float(string=_('Bar Length (mm)'), digits=(12, 0), compute='_compute_totals', store=True)
     member_length = fields.Float(string=_('Member Length (mm)'), digits=(12, 0),
-                                 related='boq_id.quantity', store=True, readonly=True)
+                                 related='bom_id.length', store=True, readonly=True)
     spacing = fields.Many2one(comodel_name='rebar.quantity.spacing', string=_('Spacing (mm)'))
     no_in_member = fields.Float(string=_('No in Members'), digits=(12, 3),
                                 # compute='_compute_totals', store=True
