@@ -44,8 +44,7 @@ class MrpBOMLine(models.Model):
     @api.depends('concrete_density', 'bom_id.product_id.csa', 'bom_id.product_tmpl_id.csa', 'bom_id.length')
     def _compute_concrete_vol(self):
         for r in self:
-            r.concrete_vol = r.concrete_density * \
-                             (r.bom_id.product_id.id and r.bom_id.product_id.csa or r.bom_id.product_tmpl_id.csa) * \
+            r.concrete_vol = (r.bom_id.product_id.id and r.bom_id.product_id.csa or r.bom_id.product_tmpl_id.csa) * \
                              r.bom_id.length / 1000
 
     name = fields.Char(string=_('Name'))
